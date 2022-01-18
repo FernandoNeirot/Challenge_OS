@@ -6,7 +6,7 @@ import { Redirect, useHistory } from 'react-router';
 import * as yup from "yup";
 import { login } from '../store/ducks/userDuck';
 const validationSchema = yup.object({
-    userName: yup.string().matches(/[abcdefghijklmnopqrstuvwxyz]+/, 'Is not in correct format'),
+    userName: yup.string().required("Is required"),
     password: yup.string().required("Is required"),
 });
 const initialValues = {
