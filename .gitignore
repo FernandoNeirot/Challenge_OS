@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs
+/BackEnd/.vs/BackEnd
+/BackEnd/BackEnd/bin/Debug/net5.0
+/BackEnd/BackEnd/obj
