@@ -14,7 +14,7 @@ namespace BackEnd.Controllers
         // GET: api/<UserController>
         [HttpGet]
         [EnableCors("AllowOrigin")]
-        public IActionResult Get(int number)
+        public IActionResult Get()
         {
                 return Ok();
         }
@@ -23,7 +23,7 @@ namespace BackEnd.Controllers
         public IActionResult ValidUser(UserDTO userDTO)
         {
             if (userDTO.UserName.ToLower() == "fernando.neirot@hotmail.com" && userDTO.Password == "12345")
-                return Ok();
+                return Ok(userDTO.UserName);
             else
                 return NotFound();
         }

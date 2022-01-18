@@ -1,11 +1,12 @@
 import { Button, Grid, TextField } from '@material-ui/core';
 import { FormikProvider, useFormik } from 'formik';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import { Redirect, useHistory } from 'react-router';
 import * as yup from "yup";
 import { login } from '../store/ducks/userDuck';
 const validationSchema = yup.object({
-    userName: yup.string().required("Is required"),
+    userName: yup.string().matches(/[abcdefghijklmnopqrstuvwxyz]+/, 'Is not in correct format'),
     password: yup.string().required("Is required"),
 });
 const initialValues = {
@@ -15,6 +16,9 @@ const initialValues = {
 const Login = () => {
     const dispatch = useDispatch()
     const error = useSelector(state => state.user.hasError)
+    let history = useHistory();
+    const { isLogin } = useSelector(state => state.user)
+
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: validationSchema,
@@ -23,77 +27,87 @@ const Login = () => {
         },
     });
 
-    return (
-        <FormikProvider value={formik}>
-            <form onSubmit={formik.handleSubmit}
-                style={{
-                    width: "40%",
-                    marginLeft: "30%",
-                    marginTop: "150px",
-                    padding: "25px",
-                    border: "solid 1px",
-                }}
-            >
-                <Grid container direction="row" item xs={12}>
-                    <Grid item xs={12} style={{ marginBottom: "20px" }} >
-                        <TextField
-                            id="userName"
-                            variant="outlined"
-                            name="userName"
-                            label="userName"
-                            value={formik.values.userName}
-                            onChange={formik.handleChange}
-                            error={formik.touched.userName && Boolean(formik.errors.userName)}
-                            helperText={formik.touched.userName && formik.errors.userName}
-                            fullWidth
-                        />
+    useEffect(() => {
+        if (isLogin)
+            history.push("/")
+    }, [isLogin,history])
+    return (<>
+        {
+            isLogin?
+                (<Redirect to='/myshares' />):
+    (<FormikProvider value={formik}>
+        <form onSubmit={formik.handleSubmit}
+            style={{
+                width: "40%",
+                marginLeft: "30%",
+                marginTop: "150px",
+                padding: "25px",
+                border: "solid 1px",
+            }}
+        >
+            <Grid container direction="row" item xs={12}>
+                <Grid item xs={12} style={{ marginBottom: "20px" }} >
+                    <TextField
+                        id="userName"
+                        variant="outlined"
+                        name="userName"
+                        label="userName"
+                        value={formik.values.userName}
+                        onChange={formik.handleChange}
+                        error={formik.touched.userName && Boolean(formik.errors.userName)}
+                        helperText={formik.touched.userName && formik.errors.userName}
+                        fullWidth
+                    />
+                </Grid>
+            </Grid>
+            <Grid container direction="row" item xs={12}>
+                <Grid item xs={12} style={{ marginBottom: "20px" }} >
+                    <TextField
+                        id="password"
+                        variant="outlined"
+                        type="password"
+                        name="password"
+                        label="password"
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        error={formik.touched.password && Boolean(formik.errors.password)}
+                        helperText={formik.touched.password && formik.errors.password}
+                        fullWidth
+                    />
+                </Grid>
+            </Grid>
+
+            <Grid container direction="row">
+                <Grid item xs={8} />
+                <Grid item xs={12}>
+
+                    <Button
+                        color="primary"
+                        onClick={formik.handleSubmit}
+                        variant="contained"
+                        style={{ marginLeft: "1%" }}
+                    >
+                        Save
+      </Button>
+                </Grid>
+
+            </Grid>
+            {
+                error ? (
+                    <Grid >
+                        Usuario o Clave Incorrecta
                     </Grid>
-                </Grid>
-                <Grid container direction="row" item xs={12}>
-                    <Grid item xs={12} style={{ marginBottom: "20px" }} >
-                        <TextField
-                            id="password"
-                            variant="outlined"
-                            type="password"
-                            name="password"
-                            label="password"
-                            value={formik.values.password}
-                            onChange={formik.handleChange}
-                            error={formik.touched.password && Boolean(formik.errors.password)}
-                            helperText={formik.touched.password && formik.errors.password}
-                            fullWidth
-                        />
-                    </Grid>
-                </Grid>
+                ) : null
+            }
+            <Grid>
 
-                <Grid container direction="row">
-                    <Grid item xs={8} />
-                    <Grid item xs={12}>
+            </Grid>
+        </form>
+    </FormikProvider>
+    )
 
-                        <Button
-                            color="primary"
-                            onClick={formik.handleSubmit}
-                            variant="contained"
-                            style={{ marginLeft: "1%" }}
-                        >
-                            Save
-              </Button>
-                    </Grid>
-
-                </Grid>
-                {
-                    error ? (
-                        <Grid >
-                            Usuario o Clave Incorrecta
-                        </Grid>
-                    ) : null
-                }
-                <Grid>
-
-                </Grid>
-            </form>
-        </FormikProvider>
-
+}
+     </>  
     )
 }
 
