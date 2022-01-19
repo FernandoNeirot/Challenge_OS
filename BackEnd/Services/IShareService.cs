@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public interface  IUserService
+    public interface IShareService
     {
-        bool Login(User user);
-        int GetUserId(string username);
+        List<Share> GetAllByUser(int userId);
     }
 }
