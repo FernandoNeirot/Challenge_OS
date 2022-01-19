@@ -9,11 +9,12 @@ const validationSchema = yup.object({
     userName: yup.string().required("Is required"),
     password: yup.string().required("Is required"),
 });
-const initialValues = {
-    userName: "Fernando.neirot@hotmail.com",
-    password: "12345",
-};
+
 const Login = () => {
+    const initialValues = {
+        userName: "Fernando.neirot@hotmail.com",
+        password: "12345",
+    };
     const dispatch = useDispatch()
     const error = useSelector(state => state.user.hasError)
     let history = useHistory();

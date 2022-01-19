@@ -10,8 +10,6 @@ const PrivateRoute = ({component, path, ...rest}) => {
     const dispatch = useDispatch()
     const [isLogin, setIsLogin] = useState(false)
     // const { isLogin } = useSelector(state => state.user)
-    console.log(isLogin)
-    console.log(localStorage.getItem('user'))
     if (localStorage.getItem('user') && !isLogin) {
         dispatch(loginLocalStorage(
             JSON.parse(localStorage.getItem('user'))

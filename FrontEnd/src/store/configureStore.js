@@ -16,8 +16,6 @@ export default function configureStore(initialState = {}) //, bearerToken, appIn
     }
     const middlewareConfig = {
         onError({ dispatch, error }) {
-            console.log("Error", error)
-            console.log("Error dispatch", dispatch)
             const { response } = error;
             const message = error.message ?? "Request error";
             const title = response.data.title;
@@ -29,8 +27,7 @@ export default function configureStore(initialState = {}) //, bearerToken, appIn
         const axiosInstance = axios.create(axiosInit);
            axiosInstance.interceptors.response.use(function (config) {            
             return config;
-        }, function (error) {   
-            console.log("aca")        
+        }, function (error) {         
             return Promise.reject(error);
         })
     

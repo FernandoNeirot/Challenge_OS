@@ -11,6 +11,10 @@ const ADD_SHARE_SUCCESS = "ADD_SHARE_SUCCESS"
 const GET_SHARE = "GET_SHARE"
 const GET_SHARE_SUCCESS = "GET_SHARE_SUCCESS"
 
+const GET_QUOTE = "GET_QUOTE"
+const GET_QUOTE_SUCCESS = "GET_QUOTE_SUCCESS"
+
+
 
 // 16f8fae83429457a904fdaa8cf14a61b
 
@@ -18,6 +22,40 @@ const BASE_ENDPOINT = 'api/myshares';
 const initialValues = {
   myshares: [],
   symbolList:[],
+  qoute:{
+    "meta": {
+      "symbol": "AAPL",
+      "interval": "15min",
+      "currency": "USD",
+      "exchange_timezone": "America/New_York",
+      "exchange": "NASDAQ",
+      "type": "Common Stock"
+    },
+    "values": [
+      {
+        "datetime": "2022-01-19 15:30:00",
+        "open": "167.50999",
+        "high": "167.67000",
+        "low": "167.21001",
+        "close": "167.25999",
+        "volume": "1285843"
+      },
+      {
+        "datetime": "2022-01-19 15:15:00",
+        "open": "168.15500",
+        "high": "168.22000",
+        "low": "167.49500",
+        "close": "167.50999",
+        "volume": "2550650"
+      },
+      {
+        "datetime": "2022-01-19 15:00:00",
+        "open": "167.94501",
+        "high": "168.26990",
+        "low": "167.66000",
+        "close": "168.15990",
+        "volume": "2439309"
+      }]},
   loading: false,
   hasError: false,
   hasErrorMessage:"",
@@ -46,6 +84,7 @@ const myshares = (state = initialValues, action) => {
         loading: true,
       };
     }
+
     case ADD_SHARE_SUCCESS: {
       return {
         ...state,
@@ -74,12 +113,29 @@ const myshares = (state = initialValues, action) => {
         loading: true,
       };
     }
+    
     case GET_MYSHARES_SUCCESS: {
       return {
         ...state,
         loading: false,
         hasError: false,
         myshares: action.payload.data
+      };
+    }
+
+    case GET_QUOTE: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+
+    case GET_QUOTE_SUCCESS: {
+      return {
+        ...state,
+        loading: false,
+        hasError: false,
+        qoute: action.payload.data
       };
     }
 
@@ -108,7 +164,6 @@ export const getSymbolList = () => {
   };
 };
 export const addShare = (data) => {
-  console.log("addShare")
   return {
     type: ADD_SHARE,
     payload: {
@@ -122,7 +177,6 @@ export const addShare = (data) => {
 };
 
 export const getShare = (symbol) => {
-  console.log("getShare")
   return {
     type: GET_SHARE,
     payload: {
@@ -133,6 +187,27 @@ export const getShare = (symbol) => {
     },
   };
 };
+
+export const getQuote = (isHistorical=false,symbol="TSLA",interval="5min",startDate="2022-01-19 12:00:00",endDate="2022-01-18 12:00:00") => {
+  let url ;
+  
+  if (!isHistorical)
+    url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=${interval}&start_date=${startDate}&apikey=16f8fae83429457a904fdaa8cf14a61b`;
+  else
+    url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=${interval}&start_date=${startDate}&end_date=${endDate}&apikey=16f8fae83429457a904fdaa8cf14a61b`
+console.log(url)
+  // return {
+  //   type: GET_QUOTE,
+  //   payload: {
+  //     request: {
+  //       url: `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=${interval}&start_date=${startDate}%2009:48:00&end_date=${endDate}%2019:48:00&apikey=16f8fae83429457a904fdaa8cf14a61b`,
+  //       method: "GET",        
+  //     },
+  //   },
+  // };
+};
+
+
 
 export const getMySharesByUser = (data="") => {
   return {

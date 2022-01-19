@@ -36,8 +36,7 @@ const MyShares = () => {
     }
 
     const handleClickSymbol=(data)=>{
-        console.log(data)
-        history.push(`/sharedetail/symbol=${data.symbol}`);
+        history.push(`/sharedetail/${data.symbol}`);
     }
 
     const columns = [
@@ -51,7 +50,6 @@ const MyShares = () => {
             viewColumns: false,
             customBodyRenderLite: (dataIndex) => {
               let rowData = myshares[dataIndex];
-              //console.log(rowData);
               return (
                 <Button onClick={()=>handleClickSymbol(rowData)}>
                     {rowData.symbol}
@@ -88,7 +86,6 @@ const MyShares = () => {
             viewColumns: false,
             customBodyRenderLite: (dataIndex) => {
               let rowData = myshares[dataIndex];
-              //console.log(rowData);
               return (
                 <div styles={{ maxWidth: 250 }}>                  
                   <Tooltip title={"Delete"}>
@@ -113,6 +110,7 @@ const MyShares = () => {
     }, [])
 
     useEffect(() => {
+      //TODO:usar useRef
       symbolListByUser=myshares.map(x=> x.symbol);
       newSymbolList = symbolList.filter(x=> !symbolListByUser.includes(x.symbol));
       setInputValue("");
