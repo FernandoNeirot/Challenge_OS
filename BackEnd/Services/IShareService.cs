@@ -10,5 +10,8 @@ namespace Services
     public interface IShareService
     {
         List<Share> GetAllByUser(int userId);
+        bool Add(Share share);
+        bool DuplicateRow(Share share);
+        bool Delete(int id);
     }
 }

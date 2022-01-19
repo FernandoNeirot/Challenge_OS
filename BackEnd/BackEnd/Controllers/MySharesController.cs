@@ -32,7 +32,14 @@ namespace BackEnd.Controllers
         [EnableCors("AllowOrigin")]
         public IActionResult Add(ShareDTO obj)
         {
-            //Generar servicio para consultar a la DB
+            obj.UserId = _userService.GetUserId(obj.UserName);
+            var isDuplicate = _shareService.DuplicateRow(obj.ToEntity());
+
+            if (obj.UserId > 0 && !isDuplicate)
+                _shareService.Add(obj.ToEntity());
+            else
+                return BadRequest();
+
             return Ok();
         }
 
