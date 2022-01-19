@@ -5,11 +5,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAccess;
+using Services;
 
 namespace BackEnd
 {
@@ -25,6 +28,14 @@ namespace BackEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppChallengeContext>(options =>
+
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                    sqlOptions =>
+                    {
+                        sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    })
+            );
             services.AddCors(c =>
             {
                 c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
@@ -34,6 +45,8 @@ namespace BackEnd
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BackEnd", Version = "v1" });
             });
+
+            services.AddTransient<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
