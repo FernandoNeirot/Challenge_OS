@@ -6,12 +6,10 @@ import {
   } from "react-router-dom";
 import { loginLocalStorage } from '../store/ducks/userDuck';
 
-const PrivateRoute = ({component, path, ...rest}) => {
-    const dispatch = useDispatch()
+const PublicRoute = ({component, path, ...rest}) => {
     const [isLogin, setIsLogin] = useState(false)
-    // const { isLogin } = useSelector(state => state.user)
-    console.log(isLogin)
-    console.log(localStorage.getItem('user'))
+    const dispatch = useDispatch();
+    //TODO: Validar contra backend el user
     if (localStorage.getItem('user') && !isLogin) {
         dispatch(loginLocalStorage(
             JSON.parse(localStorage.getItem('user'))
@@ -21,12 +19,12 @@ const PrivateRoute = ({component, path, ...rest}) => {
     return (
         <div>
             {
-                isLogin?
+                !isLogin?
                 (<Route component={component} path={path} {...rest} />):
-                (<Redirect to="/login" {...rest} />)
+                (<Redirect to="/myshare" {...rest} />)
             }    
         </div>
     )
 }
 
-export default PrivateRoute
+export default PublicRoute

@@ -5,19 +5,26 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Button, Grid, IconButton, TextField, Tooltip } from '@material-ui/core';
 import MUIDataTable from 'mui-datatables';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useHistory } from "react-router-dom";
 
 const MyShares = () => {
+    let history = useHistory();
     const [value, setValue] = React.useState("");
     const [inputValue, setInputValue] = React.useState('');
 
     const dispatch = useDispatch()
     const { myshares, symbolList, } = useSelector(state => state.myshares)
     const { user } = useSelector(state => state.user)
-
+    let symbolListByUser=myshares.map(x=> x.symbol);
+    let newSymbolList = symbolList.filter(x=> !symbolListByUser.includes(x.symbol));
     const handleAddShare = () => {
         if (value !== "") {
+          //TODO: Agregar un spinner para la espera del proceso
             dispatch(getShare(value)).then((resGet) => {
-                dispatch(addShare(resGet.payload.data.data[0])).then((resAdd) => {               
+                let response =resGet.payload.data.data[0];
+                response.userName=user;
+                dispatch(addShare(response)).then((resAdd) => {                     
+                  dispatch(getMySharesByUser(user));                  
                 })
             })
                 .catch((err) => {
@@ -30,6 +37,7 @@ const MyShares = () => {
 
     const handleClickSymbol=(data)=>{
         console.log(data)
+        history.push(`/sharedetail/symbol=${data.symbol}`);
     }
 
     const columns = [
@@ -104,6 +112,12 @@ const MyShares = () => {
         dispatch(getMySharesByUser(user))
     }, [])
 
+    useEffect(() => {
+      symbolListByUser=myshares.map(x=> x.symbol);
+      newSymbolList = symbolList.filter(x=> !symbolListByUser.includes(x.symbol));
+      setInputValue("");
+    }, [myshares])
+
     return (
         <Grid>
             <Grid
@@ -125,7 +139,7 @@ const MyShares = () => {
                             setInputValue(newInputValue);
                         }}
                         id="symbol-autocomplete"
-                        options={symbolList.map(x => x.symbol)}
+                        options={newSymbolList.map(x => x.symbol)}
                         sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label="Symbol" />}
                     />

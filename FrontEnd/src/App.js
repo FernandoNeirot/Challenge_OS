@@ -9,7 +9,9 @@ import {
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import MyShares from './pages/MyShares';
+import ShareDetail from './pages/ShareDetail';
 import PrivateRoute from './routers/PrivateRoute';
+import PublicRoute from './routers/PublicRoute';
 
 import configureStore from './store/configureStore';
 const store = configureStore()
@@ -21,7 +23,8 @@ function App() {
         <Navbar />
         <Switch>
           <PrivateRoute component={MyShares} path="/myshares" exact/>
-          <Route component={Login} path="/login" exact/>
+          <PrivateRoute component={ShareDetail} path="/sharedetail/:symbol" exact/>
+          <PublicRoute component={Login} path="/login" exact/>
           <Redirect to='/myshares' />
         </Switch>
     </Router>

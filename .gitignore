@@ -6,3 +6,8 @@
 /BackEnd/.vs/BackEnd
 /BackEnd/BackEnd/bin/Debug/net5.0
 /BackEnd/BackEnd/obj
+/BackEnd/BackEnd/bin/Debug/net6.0
+/BackEnd/DataAccess/bin/Debug/net6.0
+/BackEnd/DataAccess/obj
+/BackEnd/Services/obj
+/BackEnd/Services/bin/Debug/net6.0
