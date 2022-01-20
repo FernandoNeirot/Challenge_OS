@@ -12,8 +12,8 @@ const validationSchema = yup.object({
 
 const Login = () => {
     const initialValues = {
-        userName: "Fernando.neirot@hotmail.com",
-        password: "12345",
+        userName: "",
+        password: "",
     };
     const dispatch = useDispatch()
     const error = useSelector(state => state.user.hasError)
@@ -88,7 +88,7 @@ const Login = () => {
                         variant="contained"
                         style={{ marginLeft: "1%" }}
                     >
-                        Save
+                        Ingresar
       </Button>
                 </Grid>
 
