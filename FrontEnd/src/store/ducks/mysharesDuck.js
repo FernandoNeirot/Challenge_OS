@@ -188,13 +188,15 @@ export const getShare = (symbol) => {
   };
 };
 
-export const getQuote = (isHistorical=false,symbol="TSLA",interval="5min",startDate="2022-01-19 12:00:00",endDate="2022-01-18 12:00:00") => {
+export const getQuote = (props) => {
+  const {symbol,intervalValue,isHistorical,startDate,endDate}=props
+  console.log(props)
   let url ;
   
   if (!isHistorical)
-    url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=${interval}&start_date=${startDate}&apikey=16f8fae83429457a904fdaa8cf14a61b`;
+    url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=${intervalValue}&start_date=${startDate}&apikey=16f8fae83429457a904fdaa8cf14a61b`;
   else
-    url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=${interval}&start_date=${startDate}&end_date=${endDate}&apikey=16f8fae83429457a904fdaa8cf14a61b`
+    url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=${intervalValue}&start_date=${startDate}&end_date=${endDate}&apikey=16f8fae83429457a904fdaa8cf14a61b`
 console.log(url)
   // return {
   //   type: GET_QUOTE,
