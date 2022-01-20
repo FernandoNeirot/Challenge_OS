@@ -45,17 +45,10 @@ namespace BackEnd.Controllers
 
         [HttpDelete]
         [EnableCors("AllowOrigin")]
-        public IActionResult Delete(ShareDTO shareDTO)
+        public IActionResult Delete(int idShare,string userName)
         {
-            //shareDTO.UserId = _userService.GetUserId(shareDTO.UserName);
-            //var isDuplicate = _shareService.DuplicateRow(shareDTO.ToEntity());
-
-            //if (shareDTO.UserId > 0 && !isDuplicate)
-            //    _shareService.Delete(shareDTO.ToEntity());
-            //else
-            //    return BadRequest();
-
-            return Ok();
+            _shareService.Delete(idShare);
+             return Ok();
         }
 
     }
