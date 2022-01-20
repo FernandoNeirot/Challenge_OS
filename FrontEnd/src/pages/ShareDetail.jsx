@@ -1,28 +1,30 @@
-import { Button, FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Button, ButtonGroup, FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@material-ui/core';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import Chart from '../components/chart/Chart';
 import { getQuote } from '../store/ducks/mysharesDuck';
 
 const ShareDetail = () => {
+
+    const history = useHistory();
     const { symbol } = useParams();
     const dispatch = useDispatch()
     const { qoute } = useSelector(state => state.myshares)
+    const { isLogin } = useSelector(state => state.user)
     const getDateNow = () => {
         return `${moment(Date.now()).format("YYYY-MM-DD")}T00:00:00`
     }
-    const intervals=[{
-        value:1,
-        text:"1min"
-    },{
-        value:5,
-        text:"5min"
-    },{
-        value:15,
-        text:"15min"
+    const intervals = [{
+        value: 1,
+        text: "1min"
+    }, {
+        value: 5,
+        text: "5min"
+    }, {
+        value: 15,
+        text: "15min"
     }]
     const [dataForm, setDataForn] = useState({
         isHistorical: false,
@@ -30,10 +32,10 @@ const ShareDetail = () => {
         intervalText: intervals[0].text,
         startDate: getDateNow(),
         endDate: getDateNow(),
-        symbol: symbol
+        symbol: symbol,
+        draw: false
     })
 
-    
     const handleChange = (event) => {
         setDataForn({ ...dataForm, isHistorical: JSON.parse(event.target.value) });
     };
@@ -46,8 +48,11 @@ const ShareDetail = () => {
     };
 
     const handleGraph = () => {
-        console.log(dataForm)
-        // dispatch(getQuote(dataForm));
+        setDataForn({ ...dataForm, draw: true });
+        dispatch(getQuote(dataForm));
+    }
+    const goBack = () => {
+        history.goBack();
     }
     useEffect(() => {
         if (!dataForm.isHistorical) {
@@ -56,12 +61,21 @@ const ShareDetail = () => {
     }, [dataForm.isHistorical])
 
     useEffect(() => {
-        
-        const interval = setInterval(() => {
-          console.log("Cambio",dataForm.intervalValue)
-        }, parseInt(dataForm.intervalValue+'000'));
+        if (!isLogin) {
+            history.push("/login");
+        }
+    }, [isLogin, history])
+
+    //Para refrescar grafico si es en tiempo real
+    useEffect(() => {
+        let interval;
+        if (dataForm.draw && !dataForm.isHistorical) {
+            interval = setInterval(() => {
+                handleGraph()
+            }, parseInt(dataForm.intervalValue * 60 + '000'));
+        }
         return () => clearInterval(interval);
-      }, [dataForm.intervalValue]);
+    }, [dataForm.isHistorical, dataForm.intervalValue, dataForm.draw]);
 
     return (
         <Grid container >
@@ -109,57 +123,61 @@ const ShareDetail = () => {
                 <Grid container direction="row">
                     <Grid item xs={12}>
                         <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Selecionar Intervalo</InputLabel>
+                            <InputLabel id="label-select">Selecionar Intervalo</InputLabel>
                             <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
+                                labelId="label-select"
+                                id="select-interval"
                                 value={dataForm.intervalText}
                                 label="Selecionar Intervalo"
                                 onChange={(event, newValue) => {
-                                    console.log(newValue)
-                                setDataForn({ ...dataForm, 
-                                                intervalText: newValue.props.value,
-                                                intervalValue: intervals.find(x=>x.text===newValue.props.value).value });
-                            }}
+                                    setDataForn({
+                                        ...dataForm,
+                                        intervalText: newValue.props.value,
+                                        intervalValue: intervals.find(x => x.text === newValue.props.value).value,
+                                        draw: false
+                                    });
+                                }}
                             >
-                                <MenuItem value={"1min"}>1min</MenuItem>
-                                <MenuItem value={"5min"}>5min</MenuItem>
-                                <MenuItem value={"15min"}>15min</MenuItem>
+                                {
+                                    intervals.map((item) => {
+                                        return (<MenuItem key={`itemIterval${item.value}`} value={item.text}>{item.text}</MenuItem>)
+                                    })
+                                }
                             </Select>
                         </FormControl>
-                        {/* <Autocomplete
-                            fullWidth
-                            style={{ width: "200px" }}
-                            value={dataForm.intervalValue}
-                            onChange={(event, newValue) => {
-                                setDataForn({ ...dataForm, intervalValue: newValue });
-                            }}
-                            inputValue={dataForm.intervalText}
-                            onInputChange={(event, newInputValue) => {
-                                setDataForn({ ...dataForm, intervalText: newInputValue });
-                            }}
-                            id="symbol-autocomplete"
-                            options={['1min', '5min', '15min']}
-                            // sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="Selecionar Intervalo" />}
-                        /> */}
                     </Grid>
 
                     <Grid item style={{ marginTop: "10px" }}>
-                        <Button
-                            style={{ marginLeft: "20px" }}
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleGraph()}
-                        >
-                            Graficar
-                    </Button>
+                        <ButtonGroup disableElevation variant="contained" color="primary">
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => goBack()}
+                            >Volver</Button>
+                            <Button
+                                style={{ marginLeft: "20px" }}
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleGraph()}
+                            >
+                                Graficar
+                        </Button>
+                        </ButtonGroup>
                     </Grid>
                 </Grid>
 
             </Grid>
-            <Grid item xs={9} style={{ marginTop: "20px", border: "solid 1px", marginLeft: "15%" }}>
-                <Chart data={qoute} />
+            <Grid item xs={9} style={{ width: "70%", padding: "50px", marginTop: "20px", border: "solid 1px", marginLeft: "15%" }}>
+                {
+                    qoute.status !== "noData" ?
+                        qoute.status === "error" ? (
+                            <>
+                                {qoute.message}
+                            </>
+                        ) : (
+                            <Chart data={qoute} />
+                        ) : "Sin Informacion para graficar"}
+
             </Grid>
 
         </Grid>

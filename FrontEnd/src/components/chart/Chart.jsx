@@ -12,7 +12,7 @@ const Chart = ({data}) => {
 
     const options = {
         chart: {
-            type: 'line'
+            type: 'spline'
           },
           title: {
             text: `COTIZACION DE ACCIONES: Simbolo ${meta.symbol}`
@@ -21,7 +21,7 @@ const Chart = ({data}) => {
             text: 'Fuente: https://twelvedata.com/'
           },
           xAxis: {
-            categories: dataToChart.map(x=>x.date)
+            categories: dataToChart.map(x=>x.date).reverse()
           },
           yAxis: {
             title: {
@@ -38,7 +38,7 @@ const Chart = ({data}) => {
           },
           series: [{
             name: `Contizaciones con intervalo de ${meta.interval}`,
-            data: dataToChart.map(x=>parseFloat(x.qoute))
+            data: dataToChart.map(x=>parseFloat(x.qoute)).reverse()
           }]
       }
 

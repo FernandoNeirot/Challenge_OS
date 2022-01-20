@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import {  
     Route,
@@ -7,14 +7,13 @@ import {
 import { loginLocalStorage } from '../store/ducks/userDuck';
 
 const PublicRoute = ({component, path, ...rest}) => {
-    const [isLogin, setIsLogin] = useState(false)
+    const { isLogin } = useSelector(state => state.user)
     const dispatch = useDispatch();
     //TODO: Validar contra backend el user
     if (localStorage.getItem('user') && !isLogin) {
         dispatch(loginLocalStorage(
             JSON.parse(localStorage.getItem('user'))
         ))
-        setIsLogin(true);
     }
     return (
         <div>

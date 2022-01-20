@@ -1,22 +1,36 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMySharesByUser, getSymbolList, addShare, getShare } from '../store/ducks/mysharesDuck'
+import { getMySharesByUser, getSymbolList, addShare,deleteShare, getShare } from '../store/ducks/mysharesDuck'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Button, Grid, IconButton, TextField, Tooltip } from '@material-ui/core';
 import MUIDataTable from 'mui-datatables';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useHistory } from "react-router-dom";
+import { DeleteDialog } from '../components/DeleteDialog';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const MyShares = () => {
+  const [open, setOpen] = React.useState(false);
+  const [shareToDelete, setShareToDelete] = React.useState({});
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
     let history = useHistory();
     const [value, setValue] = React.useState("");
     const [inputValue, setInputValue] = React.useState('');
-
+    const { isLogin } = useSelector(state => state.user)
     const dispatch = useDispatch()
-    const { myshares, symbolList, } = useSelector(state => state.myshares)
+    const { myshares, symbolList } = useSelector(state => state.myshares)
     const { user } = useSelector(state => state.user)
-    let symbolListByUser=myshares.map(x=> x.symbol);
-    let newSymbolList = symbolList.filter(x=> !symbolListByUser.includes(x.symbol));
+    let symbolListByUser=useRef();
+    let newSymbolList=useRef();
+    if(myshares.length>0 && symbolList.length>0){
+      symbolListByUser.current=myshares.map(x=> x.symbol);
+      newSymbolList.current=symbolList.filter(x=> !symbolListByUser.current.includes(x.symbol))
+    }
+
     const handleAddShare = () => {
         if (value !== "") {
           //TODO: Agregar un spinner para la espera del proceso
@@ -38,25 +52,38 @@ const MyShares = () => {
     const handleClickSymbol=(data)=>{
         history.push(`/sharedetail/${data.symbol}`);
     }
-
+    const handleConfirm=(row)=>{
+      setShareToDelete(row)
+      setOpen(true)
+    }
+    const handleDelete=(id)=>{
+      setOpen(false)
+      dispatch(deleteShare(id)).then((res)=>{
+        dispatch(getSymbolList())
+        dispatch(getMySharesByUser(user))
+      })
+    }
     const columns = [
         {
           name: "symbol",
           label: "Simbolo",
           options: {
-            filter: false,
-            sort: false,
+            filter: true,
+            sort: true,
             empty: true,
             viewColumns: false,
             customBodyRenderLite: (dataIndex) => {
               let rowData = myshares[dataIndex];
               return (
-                <Button onClick={()=>handleClickSymbol(rowData)}>
-                    {rowData.symbol}
-                </Button>
+                <Grid>
+                  <Button startIcon={<VisibilityIcon />} onClick={()=>handleClickSymbol(rowData)}>
+                      {rowData.symbol}
+                  </Button>
+                </Grid>
+                
               );
             },
-            setCellProps: () => ({ style: { width: 130, textAlign: "right" } }),
+            setCellProps: () => ({ style: { width: 80, textAlign: "center" } }),
           },
         },
         {
@@ -92,7 +119,7 @@ const MyShares = () => {
                     <IconButton
                       aria-label="delete"
                       size="small"
-                    //   onClick={handleConfirm(rowData)}
+                      onClick={()=>handleConfirm(rowData)}
                     >
                       <DeleteIcon/>
                     </IconButton>
@@ -104,17 +131,22 @@ const MyShares = () => {
           },
         },
       ];
+      
     useEffect(() => {
         dispatch(getSymbolList())
         dispatch(getMySharesByUser(user))
     }, [])
 
     useEffect(() => {
-      //TODO:usar useRef
-      symbolListByUser=myshares.map(x=> x.symbol);
-      newSymbolList = symbolList.filter(x=> !symbolListByUser.includes(x.symbol));
+      symbolListByUser.current = myshares.map(x=> x.symbol);
+      newSymbolList.current = symbolList.filter(x=> !symbolListByUser.current.includes(x.symbol));
       setInputValue("");
     }, [myshares])
+    useEffect(() => {
+      if (!isLogin) {
+          history.push("/login");
+      }
+  }, [isLogin,history])
 
     return (
         <Grid>
@@ -123,7 +155,7 @@ const MyShares = () => {
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
-                style={{ marginTop: "80px" }}
+                style={{ marginTop: "20px" }}
             >
                 <Grid item xs={4}>
                     <Autocomplete
@@ -132,12 +164,13 @@ const MyShares = () => {
                         onChange={(event, newValue) => {
                             setValue(newValue);
                         }}
+                        getOptionSelected={(option) => option==="" }
                         inputValue={inputValue}
                         onInputChange={(event, newInputValue) => {
                             setInputValue(newInputValue);
                         }}
                         id="symbol-autocomplete"
-                        options={newSymbolList.map(x => x.symbol)}
+                        options={newSymbolList.current?newSymbolList.current.map(x => x.symbol):[]}
                         sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label="Symbol" />}
                     />
@@ -153,13 +186,21 @@ const MyShares = () => {
                 </Button>
                 </Grid>
             </Grid>
-            <MUIDataTable
-                title={"Mis Acciones"}
-                // elevation={2}
-                columns={columns}
-                data={myshares}
-                // options={dtOptions}
-            />
+      <DeleteDialog
+        open={open}
+        onClose={handleClose}
+        data={shareToDelete}
+        handleDelete={handleDelete}
+      />
+            <Grid style={{width:"90%",marginLeft:"5%",marginTop:"25px"}}>
+              <MUIDataTable                  
+                  title={"Mis Acciones"}
+                  // elevation={2}
+                  columns={columns}
+                  data={myshares}                  
+              />
+            </Grid>
+            
         </Grid>
     )
 }
