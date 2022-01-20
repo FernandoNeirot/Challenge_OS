@@ -2,10 +2,11 @@ import React from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 const Chart = ({data}) => {
+  console.log(data)
     const {meta,values}=data;
     let dataToChart = values.map(x=>{
         return {
-            qoute:x.open,
+            quote:x.open,
             date:x.datetime
         }
     });
@@ -38,7 +39,7 @@ const Chart = ({data}) => {
           },
           series: [{
             name: `Contizaciones con intervalo de ${meta.interval}`,
-            data: dataToChart.map(x=>parseFloat(x.qoute)).reverse()
+            data: dataToChart.map(x=>parseFloat(x.quote)).reverse()
           }]
       }
 

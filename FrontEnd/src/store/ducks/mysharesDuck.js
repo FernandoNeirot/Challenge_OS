@@ -18,14 +18,14 @@ const GET_SHARE_SUCCESS = "GET_SHARE_SUCCESS"
 const GET_QUOTE = "GET_QUOTE"
 const GET_QUOTE_SUCCESS = "GET_QUOTE_SUCCESS"
 
-
+const CLEAN_QUOTE = "CLEAN_QUOTE"
 
 const BASE_ENDPOINT = 'api/myshares';
 const APIKEY='16f8fae83429457a904fdaa8cf14a61b'
 const initialValues = {
   myshares: [],
   symbolList:[],
-  qoute:{
+  quote:{
     status:"noData"
   },
   loading: false,
@@ -117,12 +117,21 @@ const myshares = (state = initialValues, action) => {
       };
     }
 
+    case CLEAN_QUOTE: {
+      return {
+        ...state,
+        quote: {
+          status:"noData"
+        },
+      };
+    }
+
     case GET_QUOTE_SUCCESS: {
       return {
         ...state,
         loading: false,
         hasError: false,
-        qoute: action.payload.data
+        quote: action.payload.data
       };
     }
 
@@ -218,5 +227,12 @@ export const getMySharesByUser = (data="") => {
     },
   };
 };
+
+export const cleanQuote = () => {
+  return {
+    type: CLEAN_QUOTE,
+  };
+};
+
 
 export default myshares;

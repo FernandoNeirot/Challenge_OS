@@ -4,14 +4,14 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router'
 import Chart from '../components/chart/Chart';
-import { getQuote } from '../store/ducks/mysharesDuck';
+import { getQuote,cleanQuote } from '../store/ducks/mysharesDuck';
 
 const ShareDetail = () => {
 
     const history = useHistory();
     const { symbol } = useParams();
     const dispatch = useDispatch()
-    const { qoute } = useSelector(state => state.myshares)
+    const { quote } = useSelector(state => state.myshares)
     const { isLogin } = useSelector(state => state.user)
     const getDateNow = () => {
         return `${moment(Date.now()).format("YYYY-MM-DD")}T00:00:00`
@@ -60,6 +60,9 @@ const ShareDetail = () => {
         }
     }, [dataForm.isHistorical])
 
+    useEffect(() => {
+        dispatch(cleanQuote());
+    }, [])
     useEffect(() => {
         if (!isLogin) {
             history.push("/login");
@@ -169,13 +172,13 @@ const ShareDetail = () => {
             </Grid>
             <Grid item xs={9} style={{ width: "70%", padding: "50px", marginTop: "20px", border: "solid 1px", marginLeft: "15%" }}>
                 {
-                    qoute.status !== "noData" ?
-                        qoute.status === "error" ? (
+                    quote.status !== "noData" ?
+                    quote.status === "error" ? (
                             <>
-                                {qoute.message}
+                                {quote.message}
                             </>
                         ) : (
-                            <Chart data={qoute} />
+                            <Chart data={quote} />
                         ) : "Sin Informacion para graficar"}
 
             </Grid>
