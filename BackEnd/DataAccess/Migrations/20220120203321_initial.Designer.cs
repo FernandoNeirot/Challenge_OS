@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(AppChallengeContext))]
-    [Migration("20220119024211_initial")]
+    [Migration("20220120203321_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,9 +36,6 @@ namespace DataAccess.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -54,14 +51,13 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Share", "masterdata");
+                    b.ToTable("Share", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             Currency = "USD",
-                            Deleted = false,
                             Name = "testName",
                             Symbol = "ATR",
                             UserId = 1
@@ -70,10 +66,17 @@ namespace DataAccess.Migrations
                         {
                             Id = 2,
                             Currency = "ARG",
-                            Deleted = false,
                             Name = "testName2",
                             Symbol = "UPS",
                             UserId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Currency = "ARG",
+                            Name = "testName2",
+                            Symbol = "UPS",
+                            UserId = 2
                         });
                 });
 
@@ -100,7 +103,7 @@ namespace DataAccess.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("User", "masterdata");
+                    b.ToTable("User", (string)null);
 
                     b.HasData(
                         new

@@ -13,7 +13,6 @@ namespace DataAccess.Models
         public string Symbol { get; set; }
         public string Name { get; set; }
         public string Currency { get; set; }
-        public bool Deleted { get; set; }
 
     }
 }

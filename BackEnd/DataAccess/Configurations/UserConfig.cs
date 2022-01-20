@@ -13,7 +13,7 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable("User", schema: "masterdata");
+            builder.ToTable("User");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.UserName).HasColumnType("nvarchar").HasMaxLength(150).IsRequired(true);
             builder.Property(x => x.Password).HasColumnType("nvarchar").HasMaxLength(100).IsRequired(true);
@@ -25,8 +25,8 @@ namespace DataAccess.Configurations
         private void AddSeedData(EntityTypeBuilder<User> builder)
         {
             builder.HasData(new User[] {
-           new(){Id=1,UserName="fernando.neirot@hotmail.com",Password="12345"},
-           new(){Id=2,UserName="admin@hotmail.com",Password="12345"},
+           new(){Id=1,UserName="gestion@os.com",Password="12345"},
+           new(){Id=2,UserName="admin@os.com",Password="12345"},
             });
         }
     }

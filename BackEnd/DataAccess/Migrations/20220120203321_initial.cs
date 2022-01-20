@@ -8,12 +8,8 @@ namespace DataAccess.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "masterdata");
-
             migrationBuilder.CreateTable(
                 name: "Share",
-                schema: "masterdata",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -21,8 +17,7 @@ namespace DataAccess.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Symbol = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false)
+                    Currency = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,7 +26,6 @@ namespace DataAccess.Migrations
 
             migrationBuilder.CreateTable(
                 name: "User",
-                schema: "masterdata",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -45,17 +39,16 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.InsertData(
-                schema: "masterdata",
                 table: "Share",
-                columns: new[] { "Id", "Currency", "Deleted", "Name", "Symbol", "UserId" },
+                columns: new[] { "Id", "Currency", "Name", "Symbol", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "USD", false, "testName", "ATR", 1 },
-                    { 2, "ARG", false, "testName2", "UPS", 1 }
+                    { 1, "USD", "testName", "ATR", 1 },
+                    { 2, "ARG", "testName2", "UPS", 1 },
+                    { 3, "ARG", "testName2", "UPS", 2 }
                 });
 
             migrationBuilder.InsertData(
-                schema: "masterdata",
                 table: "User",
                 columns: new[] { "Id", "Password", "UserName" },
                 values: new object[,]
@@ -66,7 +59,6 @@ namespace DataAccess.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_UserName",
-                schema: "masterdata",
                 table: "User",
                 column: "UserName",
                 unique: true);
@@ -75,12 +67,10 @@ namespace DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Share",
-                schema: "masterdata");
+                name: "Share");
 
             migrationBuilder.DropTable(
-                name: "User",
-                schema: "masterdata");
+                name: "User");
         }
     }
 }

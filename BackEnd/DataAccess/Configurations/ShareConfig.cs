@@ -13,13 +13,12 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Share> builder)
         {
-            builder.ToTable("Share", schema: "masterdata");
+            builder.ToTable("Share");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.UserId).HasColumnType("int").IsRequired();
+            builder.Property(x => x.UserId).IsRequired();
             builder.Property(x => x.Symbol).HasColumnType("nvarchar").HasMaxLength(100).IsRequired(true);
             builder.Property(x => x.Currency).HasColumnType("nvarchar").HasMaxLength(100).IsRequired(true);
             builder.Property(x => x.Name).HasColumnType("nvarchar").HasMaxLength(100).IsRequired(true);
-            builder.Property(x => x.Deleted).HasColumnType("bit");
 
             AddSeedData(builder);
         }
@@ -27,8 +26,9 @@ namespace DataAccess.Configurations
         private void AddSeedData(EntityTypeBuilder<Share> builder)
         {
             builder.HasData(new Share[] {
-           new(){Id=1,UserId=1,Name="testName",Currency="USD",Symbol="ATR",Deleted=false},
-           new(){Id=2,UserId=1,Name="testName2",Currency="ARG",Symbol="UPS",Deleted=false},
+           new(){Id=1,UserId=1,Name="Apple Inc.",Currency="CAD",Symbol="AAPL"},
+           new(){Id=2,UserId=1,Name="Amazon.com, Inc.",Currency="CAD",Symbol="AMZN"},
+           new(){Id=3,UserId=2,Name="Columbia Care Inc",Currency="CAD",Symbol="CCHW"},
 
             });
         }

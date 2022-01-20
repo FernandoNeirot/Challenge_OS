@@ -10,7 +10,6 @@ namespace BackEnd.DTOs
         public string Symbol { get; set; }
         public string Name { get; set; }
         public string Currency { get; set; }
-        public bool Deleted { get; set; }
         public ShareDTO()
         {
 
@@ -22,7 +21,6 @@ namespace BackEnd.DTOs
             Symbol = share.Symbol;
             Name = share.Name;
             Currency = share.Currency;
-            Deleted = share.Deleted;
         }
 
         public Share ToEntity()
@@ -34,7 +32,6 @@ namespace BackEnd.DTOs
                 Symbol=Symbol,
                 Name=Name,
                 Currency=Currency,
-                Deleted=Deleted,
             };
         }
     }
