@@ -43,5 +43,20 @@ namespace BackEnd.Controllers
             return Ok();
         }
 
+        [HttpDelete]
+        [EnableCors("AllowOrigin")]
+        public IActionResult Delete(ShareDTO shareDTO)
+        {
+            //shareDTO.UserId = _userService.GetUserId(shareDTO.UserName);
+            //var isDuplicate = _shareService.DuplicateRow(shareDTO.ToEntity());
+
+            //if (shareDTO.UserId > 0 && !isDuplicate)
+            //    _shareService.Delete(shareDTO.ToEntity());
+            //else
+            //    return BadRequest();
+
+            return Ok();
+        }
+
     }
 }

@@ -17,9 +17,11 @@ namespace Services
             return _context.SaveChanges()==1?true:false;
         }
         //realizo borrado fisico
-        public bool Delete(int id)
+        public bool Delete(int shareId)
         {
-            throw new NotImplementedException();
+            var share = _context.Shares.First(x => x.Id == shareId);
+            _context.Shares.Remove(share);
+            return _context.SaveChanges() == 1 ? true : false;
         }
         public bool DuplicateRow(Share share)=>_context.Shares.Any(x => x.Symbol == share.Symbol && x.UserId == share.UserId);
 

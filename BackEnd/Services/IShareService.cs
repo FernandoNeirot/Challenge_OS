@@ -11,7 +11,8 @@ namespace Services
     {
         List<Share> GetAllByUser(int userId);
         bool Add(Share share);
+        bool Delete(int ShareId);
         bool DuplicateRow(Share share);
-        bool Delete(int id);
+
     }
 }
