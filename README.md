@@ -18,7 +18,7 @@ Paso para levantar la aplicacion:
 7) Ejecutar la solucion (esto abrira el swagger)
 
 ----Front
-8) Abrir la carpeta frontEnd con el VisualStudio
+8) Abrir la carpeta frontEnd con el Visual Code
 9) Abrir una nueva terminal
 10) ejecutar npm install
 11) Al finalizar la instalacion, ejecutar npm start
